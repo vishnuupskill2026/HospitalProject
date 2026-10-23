@@ -1,0 +1,41 @@
+server:
+  port: ${PORT:${SERVER_PORT:8080}}
+  forward-headers-strategy: framework
+spring:
+  application:
+    name: homeopathic-clinic-api
+  datasource:
+    url: ${DATABASE_URL:jdbc:postgresql://${DB_HOST:localhost}:${DB_PORT:5432}/${DB_NAME:homeoclinic}}
+    username: ${DATABASE_USERNAME:${DB_USER:clinic_app}}
+    password: ${DATABASE_PASSWORD:${DB_PASSWORD:}}
+  jpa:
+    open-in-view: false
+    hibernate:
+      ddl-auto: validate
+    properties:
+      hibernate:
+        jdbc:
+          time_zone: UTC
+  flyway:
+    enabled: true
+    baseline-on-migrate: false
+  jackson:
+    default-property-inclusion: non_null
+clinic:
+  security:
+    jwt-secret: ${JWT_SECRET}
+    access-token-minutes: ${JWT_ACCESS_TOKEN_MINUTES:15}
+    allowed-origin: ${FRONTEND_ORIGIN:http://localhost:4200}
+  bootstrap:
+    doctor-enabled: ${BOOTSTRAP_DOCTOR_ENABLED:false}
+    doctor-email: ${BOOTSTRAP_DOCTOR_EMAIL:}
+    doctor-password: ${BOOTSTRAP_DOCTOR_PASSWORD:}
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+  endpoint:
+    health:
+      probes:
+        enabled: true

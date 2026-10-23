@@ -1,0 +1,11 @@
+.DS_Store
+.idea/
+**/.idea/
+.env
+.env.*
+!.env.example
+backend/target/
+node_modules/
+frontend/node_modules/
+frontend/dist/
+*.log

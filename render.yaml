@@ -1,0 +1,62 @@
+databases:
+  - name: hearth-clinic-db
+    databaseName: homeoclinic
+    user: clinic_app
+    plan: basic-256mb
+    region: oregon
+
+services:
+  - type: web
+    name: homeoclinic-api
+    runtime: docker
+    dockerfilePath: ./backend/Dockerfile
+    dockerContext: ./backend
+    region: oregon
+    plan: starter
+    healthCheckPath: /actuator/health
+    envVars:
+      - key: DB_HOST
+        fromDatabase:
+          name: hearth-clinic-db
+          property: host
+      - key: DB_PORT
+        fromDatabase:
+          name: hearth-clinic-db
+          property: port
+      - key: DB_NAME
+        fromDatabase:
+          name: hearth-clinic-db
+          property: database
+      - key: DB_USER
+        fromDatabase:
+          name: hearth-clinic-db
+          property: user
+      - key: DB_PASSWORD
+        fromDatabase:
+          name: hearth-clinic-db
+          property: password
+      - key: JWT_SECRET
+        generateValue: true
+      - key: FRONTEND_ORIGIN
+        value: https://hearth-clinic.onrender.com
+      - key: BOOTSTRAP_DOCTOR_ENABLED
+        value: "true"
+      - key: BOOTSTRAP_DOCTOR_EMAIL
+        sync: false
+      - key: BOOTSTRAP_DOCTOR_PASSWORD
+        sync: false
+
+  - type: web
+    name: hearth-clinic
+    runtime: static
+    buildCommand: cd frontend && npm ci && npm run build:render
+    staticPublishPath: ./frontend/dist/frontend/browser
+    rootDir: .
+    region: oregon
+    envVars:
+      - key: API_BASE_URL
+        value: https://homeoclinic-api.onrender.com
+    routes:
+      - type: rewrite
+        source: /*
+        destination: /index.html
