@@ -52,7 +52,6 @@ services:
     buildCommand: cd frontend && npm ci && npm run build:render
     staticPublishPath: ./frontend/dist/frontend/browser
     rootDir: .
-    region: oregon
     envVars:
       - key: API_BASE_URL
         value: https://homeoclinic-api.onrender.com
